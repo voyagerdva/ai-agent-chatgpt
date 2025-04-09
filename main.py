@@ -1,59 +1,53 @@
 import os
-import asyncio
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import openai
 
-# Читаем API ключ из переменных окружения (его стоит задать в Windows, например, через PowerShell или .env файл)
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Загружаем переменные окружения из .env
+load_dotenv()
 
+# Устанавливаем ключ и кастомный endpoint OpenRouter
+openai.api_key = os.getenv("OPENROUTER_API_KEY")
+openai.base_url = "https://openrouter.ai/api/v1"
+
+# Проверка на наличие ключа
 if not openai.api_key:
-    raise Exception("Необходимо установить переменную окружения OPENAI_API_KEY.")
+    raise RuntimeError("Переменная окружения OPENROUTER_API_KEY не установлена!")
 
+# FastAPI приложение
+app = FastAPI()
 
-# Определяем модель данных для входящего запроса
+# Pydantic модель запроса
 class MessageRequest(BaseModel):
     message: str
 
-
-# Создаём приложение FastAPI
-app = FastAPI()
-
-
 @app.post("/process")
 async def process_message(request: MessageRequest):
-    message = request.message
-    if not message:
-        raise HTTPException(status_code=400, detail="Поле 'message' должно быть заполнено.")
-
-    # Составляем список сообщений для ChatGPT API, можно добавить системное сообщение для контекста
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": message}
-    ]
-
-    # Оборачиваем вызов API в asyncio.to_thread, чтобы не блокировать event loop
     try:
-        response = await asyncio.to_thread(
-            lambda: openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messages
-            )
+        client = openai.AsyncOpenAI(
+            api_key=openai.api_key,
+            base_url=openai.base_url,
+            default_headers={
+                "HTTP-Referer": "http://localhost:8006",
+                "X-Title": "Local FastAPI ChatBot"
+            }
         )
+
+        response = await client.chat.completions.create(
+            model="deepseek/deepseek-r1-zero:free",  # можно заменить на другую модель
+            messages=[
+                {"role": "system", "content": "Ты — полезный русскоязычный ассистент."},
+                {"role": "user", "content": request.message}
+            ]
+        )
+
+        return {"response": response.choices[0].message.content}
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Ошибка при обращении к OpenAI API: {e}")
+        raise HTTPException(status_code=500, detail=f"Ошибка при обращении к OpenRouter API: {str(e)}")
 
-    # Извлекаем текст ответа
-    try:
-        answer_text = response["choices"][0]["message"]["content"]
-    except (KeyError, IndexError):
-        raise HTTPException(status_code=500, detail="Неверная структура ответа от API.")
-
-    # Можно вернуть ответ в виде JSON
-    return {"response": answer_text}
-
-
-# Запуск через Uvicorn (можно запускать из командной строки)
+# Запуск приложения
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8006)
+    uvicorn.run("main:app", host="127.0.0.1", port=8006, reload=True)
