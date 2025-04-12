@@ -28,14 +28,6 @@ class Agent:
             cleaned = cleaned.replace("\\n", "\n")
             cleaned = cleaned.strip()
 
-            # Находим первую и последнюю фигурную скобку
-            # json_start = cleaned.find("{")
-            # json_end = cleaned.rfind("}")
-            # if json_start == -1 or json_end == -1:
-            #     raise ValueError("Не удалось найти границы JSON-объекта")
-
-            # json_str = cleaned[json_start:json_end + 1]
-            # return json.loads(json_str)
             result = json.loads(cleaned)
             return result
 
