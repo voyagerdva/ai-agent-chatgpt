@@ -23,3 +23,9 @@ async def process_command(request: CommandRequest):
     result = await agent.process_message(request.message)
     logger.info(f"[Routes] Возвращаю результат: {result}")
     return result
+
+@router.post("/search-text")
+async def search_text(request: CommandRequest):
+    message = f"Найди все файлы, содержащие строку '{request.message}'"
+    result = await agent.process_message(message)
+    return result

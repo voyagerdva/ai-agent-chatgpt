@@ -1,15 +1,16 @@
-# core/agent.py
+# core/agent.py ss
 
 import logging
-from typing import Dict, Any, List
-from core.llm_client import get_llm_client
-from file_manager.file_manager import FileManager
-
 import json
 import re
+from typing import Dict, Any, List
+
+from core.llm_client.factory import get_llm_client
+from file_manager.file_manager import FileManager
 
 logger = logging.getLogger("ai_agent.core.agent")
 logger.setLevel(logging.DEBUG)
+
 
 class Agent:
     def __init__(self):
@@ -33,7 +34,6 @@ class Agent:
 
         except Exception as e:
             raise ValueError(f"Ошибка при извлечении JSON из ответа LLM: {e}")
-
 
     async def process_message(self, message: str) -> Dict[str, Any]:
         logger.info(f"[Agent] Получен запрос: {message}")
