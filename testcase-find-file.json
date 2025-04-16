@@ -1,0 +1,21 @@
+{
+    "request": {
+        "message": "Найди мне файлы, в которых есть строка 'hello nano' , в каталоге d:/tmp/micro"
+    },
+    "response": {
+        "results": [
+            {
+                "action": {
+                    "type": "find_file",
+                    "directory": "D:/tmp/micro",
+                    "filename": "nano2.txt"
+                },
+                "result": {
+                    "found": true,
+                    "path": "D:/tmp/micro\\nano2.txt"
+                }
+            }
+        ]
+    },
+    "comments": "в целом ответ нормальный, хотя надо поправить косяк со слешами - прямым и обратными"
+}

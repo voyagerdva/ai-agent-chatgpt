@@ -1,0 +1,20 @@
+{
+    "request": {
+        "message": "Найди файлы, в которых есть строка 'hello nano' , в каталоге d:/tmp/micro"
+    },
+    "response": {
+        "results": [
+            {
+                "action": {
+                    "type": "search_string_in_files",
+                    "directory": "d:/tmp/micro",
+                    "search_string": "hello nano"
+                },
+                "result": {
+                    "error": "Неподдерживаемый тип действия: search_string_in_files"
+                }
+            }
+        ]
+    },
+    "comments": "пока что ответ такой. Надо править файл хендлер, надо править генератор типа промпта - чтоб искал не только 'строку', а 'строка' 'текст', 'слова', 'содержимое', 'содержится' - это в Agent.get_prompt_for_message()"
+}

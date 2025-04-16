@@ -1,12 +1,17 @@
-# core/agent.py ss
+# core/agent.py
 
 import logging
 import json
 import re
 from typing import Dict, Any, List
 
+from core.actions.base import ActionHandler
+from core.actions.find_file_handler import FindFileHandler
+from core.actions.find_text_handler import FindTextInFilesHandler
+
 from core.llm_client.factory import get_llm_client
-from file_manager.file_manager import FileManager
+from core.llm_client.prompts import PromptType
+# from core.llm_client.gigachat import GigaChatLLMClient
 
 logger = logging.getLogger("ai_agent.core.agent")
 logger.setLevel(logging.DEBUG)
@@ -14,42 +19,47 @@ logger.setLevel(logging.DEBUG)
 
 class Agent:
     def __init__(self):
-        self.llm_client = get_llm_client()  # выбираем LLM согласно настройкам
-        self.file_manager = FileManager()
+        self.llm_client = get_llm_client()
+        # Регистрируем все обработчики здесь:
+        self.handlers: List[ActionHandler] = [
+            FindFileHandler(),
+            FindTextInFilesHandler(),
+        ]
+
+    def get_prompt_for_message(self, message: str) -> PromptType:
+        msg_lower = message.lower()
+        if "файл" in msg_lower or "найди файл" in msg_lower:
+            return PromptType.FIND_FILE
+        elif "строку" in msg_lower or "найди строку" in msg_lower:
+            return PromptType.FIND_TEXT
+        else:
+            return PromptType.GENERIC
+
 
     def extract_json_from_response(self, response: str) -> dict:
-        """
-        Извлекает JSON-объект из строки, удаляя markdown-обертки и лишние символы.
-        """
         try:
-            # Удаляем markdown блоки и LaTeX конструкции, такие как \boxed и ```
             cleaned = re.sub(r"\\boxed", "", response)
             cleaned = re.sub(r"[`{}]+json", "", cleaned, flags=re.IGNORECASE)
             cleaned = cleaned.replace("```", "")
             cleaned = cleaned.replace("\\n", "\n")
             cleaned = cleaned.strip()
-
-            result = json.loads(cleaned)
-            return result
-
+            return json.loads(cleaned)
         except Exception as e:
             raise ValueError(f"Ошибка при извлечении JSON из ответа LLM: {e}")
 
     async def process_message(self, message: str) -> Dict[str, Any]:
         logger.info(f"[Agent] Получен запрос: {message}")
-        # Отправляем текст запроса в LLM и получаем ответ
-        llm_response_text = await self.llm_client.send_message(message)
 
-        # Пробуем разобрать JSON-ответ
+        prompt_type = self.get_prompt_for_message(message)
+        llm_response_text = await self.llm_client.send_message(message, prompt_type=prompt_type)
+
         try:
             data = self.extract_json_from_response(llm_response_text)
         except Exception as e:
             logger.error(f"[Agent] Ошибка разбора JSON: {e}")
             return {"error": f"Не удалось разобрать ответ LLM: {str(e)}"}
 
-        # Ожидаем, что LLM вернёт JSON вида:
-        # { "actions": [{ "type": "find_file", "directory": "D:/tmp", "filename": "nano.txt" }] }
-        actions: List[Dict[str, Any]] = data.get("actions", [])
+        actions = data.get("actions", [])
         if not actions:
             logger.error("[Agent] LLM не вернул никаких действий.")
             return {"error": "LLM не вернул никаких действий."}
@@ -58,16 +68,17 @@ class Agent:
         for action in actions:
             action_type = action.get("type")
             logger.info(f"[Agent] Обрабатываю действие: {action_type}")
-            if action_type == "find_file":
-                directory = action.get("directory")
-                filename = action.get("filename")
-                result = self.file_manager.find_file(directory, filename)
-                logger.debug(f"[Agent] Результат поиска: {result}")
-                results.append({"action": action, "result": result})
+
+            handler = next((h for h in self.handlers if h.can_handle(action_type)), None)
+            if handler:
+                result = await handler.handle(action)
+                results.append(result)
             else:
                 logger.warning(f"[Agent] Неподдерживаемый тип действия: {action_type}")
                 results.append({
                     "action": action,
                     "result": {"error": f"Неподдерживаемый тип действия: {action_type}"}
                 })
+
         return {"results": results}
+
