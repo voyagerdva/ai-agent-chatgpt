@@ -6,7 +6,7 @@ import re
 from typing import Dict, Any, List
 
 from core.actions.base import ActionHandler
-from core.actions.find_file_handler import FindFileHandler
+from core.actions.find_file_in_folder_handler import FindFileInFolderHandler
 from core.actions.find_text_handler import FindTextInFilesHandler
 
 from core.llm_client.factory import get_llm_client
@@ -22,14 +22,14 @@ class Agent:
         self.llm_client = get_llm_client()
         # Регистрируем все обработчики здесь:
         self.handlers: List[ActionHandler] = [
-            FindFileHandler(),
+            FindFileInFolderHandler(),
             FindTextInFilesHandler(),
         ]
 
     def get_prompt_for_message(self, message: str) -> PromptType:
         msg_lower = message.lower()
         if "файл" in msg_lower or "найди файл" in msg_lower:
-            return PromptType.FIND_FILE
+            return PromptType.FIND_FILE_IN_FOLDER
         elif "строку" in msg_lower or "найди строку" in msg_lower:
             return PromptType.FIND_TEXT
         else:
@@ -47,7 +47,7 @@ class Agent:
         except Exception as e:
             raise ValueError(f"Ошибка при извлечении JSON из ответа LLM: {e}")
 
-    async def process_message(self, message: str) -> Dict[str, Any]:
+    async def preparePromptAndTalkToLLM(self, message: str) -> Dict[str, Any]:
         logger.info(f"[Agent] Получен запрос: {message}")
 
         prompt_type = self.get_prompt_for_message(message)

@@ -15,17 +15,17 @@ class CommandRequest(BaseModel):
 # Инициализируем агента
 agent = Agent()
 
-@router.post("/process")
-async def process_command(request: CommandRequest):
+@router.post("/find_file_in_folder")
+async def findFileInFolderCommand(request: CommandRequest):
     logger.info(f"[Routes] Получен запрос: {request.message}")
     if not request.message:
         raise HTTPException(status_code=400, detail="Поле 'message' обязательно.")
-    result = await agent.process_message(request.message)
+    result = await agent.preparePromptAndTalkToLLM(request.message)
     logger.info(f"[Routes] Возвращаю результат: {result}")
     return result
 
-@router.post("/search-text")
-async def search_text(request: CommandRequest):
+@router.post("/find_text_in_files")
+async def findTextInFilesCommand(request: CommandRequest):
     message = f"Найди все файлы, содержащие строку '{request.message}'"
-    result = await agent.process_message(message)
+    result = await agent.preparePromptAndTalkToLLM(message)
     return result

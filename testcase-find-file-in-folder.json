@@ -6,7 +6,7 @@
         "results": [
             {
                 "action": {
-                    "type": "find_file",
+                    "type": "find_file_in_folder",
                     "directory": "D:/tmp/micro",
                     "filename": "nano2.txt"
                 },

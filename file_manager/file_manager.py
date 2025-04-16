@@ -10,7 +10,7 @@ class FileManager:
     def __init__(self):
         pass
 
-    def find_file(self, directory: str, filename: str) -> dict:
+    def find_file_in_folder(self, directory: str, filename: str) -> dict:
         logger.info(f"[FileManager] Поиск файла '{filename}' в каталоге '{directory}'")
         if not os.path.isdir(directory):
             logger.error(f"[FileManager] Каталог '{directory}' не существует или недоступен.")
