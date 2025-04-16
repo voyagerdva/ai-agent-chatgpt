@@ -11,10 +11,17 @@ from core.actions.find_text_handler import FindTextInFilesHandler
 
 from core.llm_client.factory import get_llm_client
 from core.llm_client.prompts import PromptType
+from core.llm_client.keywords import KEYWORDS, KeywordSet
+
 # from core.llm_client.gigachat import GigaChatLLMClient
 
 logger = logging.getLogger("ai_agent.core.agent")
 logger.setLevel(logging.DEBUG)
+
+KEYWORD_TO_PROMPT_MAP = {
+    KeywordSet.FIND_FILE_IN_FOLDER: PromptType.FIND_FILE_IN_FOLDER,
+    KeywordSet.FIND_TEXT_IN_FILES: PromptType.FIND_TEXT,
+}
 
 
 class Agent:
@@ -26,14 +33,13 @@ class Agent:
             FindTextInFilesHandler(),
         ]
 
+
     def get_prompt_for_message(self, message: str) -> PromptType:
         msg_lower = message.lower()
-        if "файл" in msg_lower or "найди файл" in msg_lower:
-            return PromptType.FIND_FILE_IN_FOLDER
-        elif "строку" in msg_lower or "найди строку" in msg_lower:
-            return PromptType.FIND_TEXT
-        else:
-            return PromptType.GENERIC
+        for keyword_set, patterns in KEYWORDS.items():
+            if any(pattern in msg_lower for pattern in patterns):
+                return KEYWORD_TO_PROMPT_MAP.get(keyword_set, PromptType.GENERIC)
+        return PromptType.GENERIC
 
 
     def extract_json_from_response(self, response: str) -> dict:
@@ -81,4 +87,3 @@ class Agent:
                 })
 
         return {"results": results}
-
