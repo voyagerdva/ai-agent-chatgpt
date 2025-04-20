@@ -4,7 +4,7 @@ from enum import Enum
 
 class PromptType(str, Enum):
     FIND_FILE_IN_FOLDER = "find_file_in_folder"
-    FIND_TEXT = "find_text"
+    FIND_TEXT_IN_FILES = "find_text_in_files"
     GENERIC = "generic"
 
 PROMPTS = {
@@ -14,10 +14,10 @@ PROMPTS = {
         "верни чистый JSON без пояснений:\n"
         "{\"actions\": [{\"type\": \"find_file_in_folder\", \"directory\": \"D:/tmp\", \"filename\": \"nano.txt\"}]}"
     ),
-    PromptType.FIND_TEXT: (
+    PromptType.FIND_TEXT_IN_FILES: (
         "Ты — эксперт по анализу естественного языка. Если получишь команду вида: "
         "'найди строку \"hello\" в файлах каталога D:/tmp', верни JSON:\n"
-        "{\"actions\": [{\"type\": \"find_text\", \"directory\": \"D:/tmp\", \"text\": \"hello\"}]}"
+        "{\"actions\": [{\"type\": \"find_text_in_files\", \"directory\": \"D:/tmp\", \"text\": \"hello\"}]}"
     ),
     PromptType.GENERIC: (
         "Ты — агент преобразования естественного языка в JSON. "

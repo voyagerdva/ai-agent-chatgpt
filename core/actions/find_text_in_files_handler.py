@@ -1,4 +1,5 @@
-# core/actions/find_text_handler.py
+# core/actions/find_text_in_files_handler.py
+
 from typing import Dict, Any
 from core.actions.base import ActionHandler
 from file_manager.file_manager import FileManager

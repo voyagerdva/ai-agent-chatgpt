@@ -24,6 +24,7 @@ class FileManager:
         logger.info(f"[FileManager] Файл '{filename}' не найден.")
         return {"found": False, "message": f"Файл '{filename}' не найден в каталоге '{directory}'."}
 
+
     def find_text_in_files(self, directory: str, text: str) -> dict:
         logger.info(f"[FileManager] Поиск текста '{text}' в файлах каталога '{directory}'")
 

@@ -7,7 +7,7 @@ from typing import Dict, Any, List
 
 from core.actions.base import ActionHandler
 from core.actions.find_file_in_folder_handler import FindFileInFolderHandler
-from core.actions.find_text_handler import FindTextInFilesHandler
+from core.actions.find_text_in_files_handler import FindTextInFilesHandler
 
 from core.llm_client.factory import get_llm_client
 from core.llm_client.prompts import PromptType
@@ -20,7 +20,7 @@ logger.setLevel(logging.DEBUG)
 
 KEYWORD_TO_PROMPT_MAP = {
     KeywordSet.FIND_FILE_IN_FOLDER: PromptType.FIND_FILE_IN_FOLDER,
-    KeywordSet.FIND_TEXT_IN_FILES: PromptType.FIND_TEXT,
+    KeywordSet.FIND_TEXT_IN_FILES: PromptType.FIND_TEXT_IN_FILES,
 }
 
 
