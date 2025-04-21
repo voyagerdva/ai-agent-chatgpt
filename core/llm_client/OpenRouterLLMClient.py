@@ -1,8 +1,8 @@
-# core/llm_client/openrouter.py
+# core/llm_client/OpenRouterLLMClient.py
 
 from openai import OpenAI
 from settings.config import Config
-from core.llm_client.base import BaseLLMClient
+from core.llm_client.LLMClientBase import BaseLLMClient
 
 class OpenRouterLLMClient(BaseLLMClient):
     def __init__(self):

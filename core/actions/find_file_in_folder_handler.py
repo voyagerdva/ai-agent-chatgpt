@@ -1,10 +1,12 @@
 # core/actions/find_file_in_folder_handler.py
+
 from typing import Dict, Any
-from core.actions.base import ActionHandler
 from file_manager.file_manager import FileManager
+from core.actions.ActionHandlerBase import ActionHandlerBase
+from core.models.result import ActionResult
 
 
-class FindFileInFolderHandler(ActionHandler):
+class FindFileInFolderHandlerBase(ActionHandlerBase):
     def __init__(self):
         self.file_manager = FileManager()
 
@@ -14,5 +16,12 @@ class FindFileInFolderHandler(ActionHandler):
     async def handle(self, action: Dict[str, Any]) -> Dict[str, Any]:
         directory = action.get("directory")
         filename = action.get("filename")
-        result = self.file_manager.find_file_in_folder(directory, filename)
-        return {"action": action, "result": result}
+        result: ActionResult = self.file_manager.find_file_in_folder(directory, filename)
+        return {
+            "action": {
+                "type": "find_file_in_folder",
+                "directory": directory,
+                "filename": filename
+            },
+            "result": result.dict()
+        }

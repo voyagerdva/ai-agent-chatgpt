@@ -1,8 +1,8 @@
-# core/llm_client/gigachat.py
+# core/llm_client/GigaChatLLMClient .py
 
 from gigachat import GigaChat  # или другой клиент
 from settings.config import Config
-from core.llm_client.base import BaseLLMClient
+from core.llm_client.LLMClientBase import BaseLLMClient
 
 class GigaChatLLMClient(BaseLLMClient):
     def __init__(self):

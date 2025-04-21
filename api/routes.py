@@ -26,6 +26,9 @@ async def findFileInFolderCommand(request: CommandRequest):
 
 @router.post("/find_text_in_files")
 async def findTextInFilesCommand(request: CommandRequest):
-    message = f"Найди все файлы, содержащие строку '{request.message}'"
-    result = await agent.preparePromptAndTalkToLLM(message)
+    logger.info(f"[Routes] Получен запрос: {request.message}")
+    if not request.message:
+        raise HTTPException(status_code=400, detail="Поле 'message' обязательно.")
+    result = await agent.preparePromptAndTalkToLLM(request.message)
+    logger.info(f"[Routes] Возвращаю результат: {result}")
     return result

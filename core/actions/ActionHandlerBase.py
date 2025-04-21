@@ -1,9 +1,9 @@
-# core/actions/base.py
+# core/actions/LLMClientBase.py
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 
 
-class ActionHandler(ABC):
+class ActionHandlerBase(ABC):
     @abstractmethod
     def can_handle(self, action_type: str) -> bool:
         ...

@@ -1,4 +1,4 @@
-# core/llm_client/keywords.py
+# core/llm_client/KeywordSet.py
 
 from enum import Enum
 
