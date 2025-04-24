@@ -47,16 +47,3 @@ class JsonResponseExtractorByRegex:
                 idx += 1
 
         raise ValueError("JSON‑блок не найден в ответе LLM")
-
-    def extract_validated(self, rawText: str, model: type) -> object:
-        """
-        То же самое, плюс проверка через Pydantic-модель:
-        извлекаем obj = extract(...), затем model.parse_obj(obj).
-        """
-        obj = self.extract(rawText)
-        try:
-            return model.parse_obj(obj)
-        except Exception as e:
-            if self.debug:
-                self._log(f"Pydantic validation failed: {e}")
-            raise
