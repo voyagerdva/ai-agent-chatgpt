@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger("ai_agent.llm.base")
 
-class BaseLLMClient(ABC):
+class LLMClientBase(ABC):
     def __init__(self, model: str):
         self.model = model
 

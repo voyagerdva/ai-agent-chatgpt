@@ -7,6 +7,7 @@ class KeywordSet(Enum):
     FIND_TEXT_IN_FILES = "find_text_in_files"
 
 KEYWORDS = {
+
     KeywordSet.FIND_FILE_IN_FOLDER: [
         "найди файл",
         "найди на компьюере",
@@ -16,6 +17,7 @@ KEYWORDS = {
         "файл с названием",
         "файл с именем",
     ],
+
     KeywordSet.FIND_TEXT_IN_FILES: [
         "нужно найти строку",
         "найди строку",

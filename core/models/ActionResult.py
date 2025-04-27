@@ -1,7 +1,7 @@
-# core/models/result.py
+# core/models/ActionResult.py
 
 from typing import Any
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ActionResult(BaseModel):

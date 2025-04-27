@@ -1,7 +1,7 @@
 # tests/unit/test_file_manager.py
 
 import os
-from file_manager.file_manager import FileManager
+from file_manager.FileManager import FileManager
 
 def test_find_file_in_folder(tmp_path):
     # 1. Создаём подкаталог

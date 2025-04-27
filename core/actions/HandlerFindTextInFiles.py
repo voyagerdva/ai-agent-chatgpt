@@ -1,12 +1,12 @@
-# core/actions/find_text_in_files_handler.py
+# core/actions/HandlerFindTextInFiles.py
 
 from typing import Dict, Any
-from file_manager.file_manager import FileManager
-from core.actions.ActionHandlerBase import ActionHandlerBase
-from core.models.result import ActionResult
+from file_manager.FileManager import FileManager
+from core.actions.HandlerBase import HandlerBase
+from core.models.ActionResult import ActionResult
 
 
-class FindTextInFilesHandlerBase(ActionHandlerBase):
+class HandlerFindTextInFiles(HandlerBase):
     def __init__(self):
         self.file_manager = FileManager()
 

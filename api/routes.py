@@ -3,7 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import logging
-from core.agent import Agent
+from core.Agent import Agent
 
 router = APIRouter()
 logger = logging.getLogger("ai_agent.api.routes")

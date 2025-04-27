@@ -1,11 +1,11 @@
-# core/llm_client/MockLLMClient.py
+# core/llm_client/LLMClientMock.py
 
 import random
-from core.llm_client.LLMClientBase import BaseLLMClient
+from core.llm_client.LLMClientBase import LLMClientBase
 from mock_data.fake_llm_responses import find_file_in_folder_responses, find_text_in_files_responses
 from core.llm_client.PromptType import PromptType
 
-class MockLLMClient(BaseLLMClient):
+class LLMClientMock(LLMClientBase):
     def __init__(self, debug: bool = False):
         super().__init__(model="mock")
         self.debug = debug

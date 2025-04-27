@@ -1,8 +1,8 @@
-# file_manager/file_manager.py
+# file_manager/FileManager.py
 
 import os
 import logging
-from core.models.result import ActionResult
+from core.models.ActionResult import ActionResult
 
 
 logger = logging.getLogger("ai_agent.file_manager.file_manager")

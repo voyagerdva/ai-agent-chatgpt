@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any
 
 
-class ActionHandlerBase(ABC):
+class HandlerBase(ABC):
     @abstractmethod
     def can_handle(self, action_type: str) -> bool:
         ...
