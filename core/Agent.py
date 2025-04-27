@@ -5,9 +5,9 @@ import json
 import re
 from typing import Dict, Any, List
 
-from core.actions.HandlerBase import HandlerBase
-from core.actions.HandlerFindFileInFolder import HandlerFindFileInFolder
-from core.actions.HandlerFindTextInFiles import HandlerFindTextInFiles
+from core.Handlers.HandlerBase import HandlerBase
+from core.Handlers.HandlerFindFileInFolder import HandlerFindFileInFolder
+from core.Handlers.HandlerFindTextInFiles import HandlerFindTextInFiles
 
 from core.llm_client.LLMClientFactory import LLMClientFactory
 from core.llm_client.PromptType import PromptType

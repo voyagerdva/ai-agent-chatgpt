@@ -3,13 +3,13 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path="D:/Tools/.env")
 
 class Config:
     #--- LLM-провайдер: -----------------------------------------------------
     # LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openrouter")
-    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
-    # LLM_PROVIDER = os.getenv("LLM_PROVIDER", "mockllm")
+    # LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "mockllm")
 
 
     #--- OpenRouter settings: --------------------------------------------

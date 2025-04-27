@@ -1,27 +1,27 @@
-# core/actions/HandlerFindTextInFiles.py
+# core/Handlers/HandlerFindFileInFolder.py
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager
-from core.actions.HandlerBase import HandlerBase
+from core.Handlers.HandlerBase import HandlerBase
 from core.models.ActionResult import ActionResult
 
 
-class HandlerFindTextInFiles(HandlerBase):
+class HandlerFindFileInFolder(HandlerBase):
     def __init__(self):
         self.file_manager = FileManager()
 
     def can_handle(self, action_type: str) -> bool:
-        return action_type == "find_text_in_files"
+        return action_type == "find_file_in_folder"
 
     async def handle(self, action: Dict[str, Any]) -> Dict[str, Any]:
         directory = action.get("directory")
-        find_text = action.get("find_text")  # используем название как в JSON от LLM
-        result: ActionResult = self.file_manager.find_text_in_files(directory, find_text)
+        filename = action.get("filename")
+        result: ActionResult = self.file_manager.findFileinFolder(directory, filename)
         return {
             "action": {
-                "type": "find_text_in_files",
+                "type": "find_file_in_folder",
                 "directory": directory,
-                "find_text": find_text
+                "filename": filename
             },
             "result": result.dict()
         }
