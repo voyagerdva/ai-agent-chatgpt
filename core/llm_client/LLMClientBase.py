@@ -21,10 +21,10 @@ class LLMClientBase(ABC):
         """Выполняет вызов API (синхронный метод, используется через asyncio.to_thread)"""
         pass
 
-    async def send_message(self, message: str, prompt_type: PromptType = PromptType.GENERIC) -> str:
+    async def send_message(self, message: str, prompt_type: PromptType = PromptType.MACRO_TASK) -> str:
         logger.info(f"[{self.__class__.__name__}] Отправка запроса в LLM...")
 
-        system_prompt = PROMPTS.get(prompt_type, PROMPTS[PromptType.GENERIC])
+        system_prompt = PROMPTS.get(prompt_type, PROMPTS[PromptType.MACRO_TASK])
 
         messages = [
             {"role": "system", "content": system_prompt},
