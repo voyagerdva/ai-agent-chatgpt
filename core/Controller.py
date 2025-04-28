@@ -1,4 +1,4 @@
-# core/Agent.py
+# core/Controller.py
 
 import logging
 import json
@@ -25,7 +25,7 @@ KEYWORD_TO_PROMPT_MAP = {
     KeywordSet.FIND_TEXT_IN_FILES: PromptType.FIND_TEXT_IN_FILES,
 }
 
-class Agent:
+class Controller:
     def __init__(self):
 
         self.llm_client = LLMClientFactory.get_llm_client()
