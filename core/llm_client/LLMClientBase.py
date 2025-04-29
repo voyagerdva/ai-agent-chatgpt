@@ -1,7 +1,7 @@
 # core/llm_client/LLMClientBase.py
 
 from abc import ABC, abstractmethod
-from core.llm_client.PromptType import PROMPTS, PromptType
+from core.llm_client.SystemPromptType import SYSTEM_PROMPTS, SystemPromptType
 import asyncio
 import logging
 
@@ -21,10 +21,10 @@ class LLMClientBase(ABC):
         """Выполняет вызов API (синхронный метод, используется через asyncio.to_thread)"""
         pass
 
-    async def send_message(self, message: str, prompt_type: PromptType = PromptType.MACRO_TASK) -> str:
+    async def send_message(self, message: str, prompt_type: SystemPromptType) -> str:
         logger.info(f"[{self.__class__.__name__}] Отправка запроса в LLM...")
 
-        system_prompt = PROMPTS.get(prompt_type, PROMPTS[PromptType.MACRO_TASK])
+        system_prompt = SYSTEM_PROMPTS.get(prompt_type)
 
         messages = [
             {"role": "system", "content": system_prompt},
@@ -34,7 +34,7 @@ class LLMClientBase(ABC):
         try:
             completion = await asyncio.to_thread(lambda: self._get_completion(messages))
             llm_text = completion.choices[0].message.content
-            logger.info(f"[{self.__class__.__name__}] Ответ получен:\n{llm_text}")
+            logger.info(f"\n[{self.__class__.__name__}] Ответ получен:\n{llm_text}\n")
             return llm_text
         except Exception as e:
             logger.error(f"[{self.__class__.__name__}] Ошибка: {e}")

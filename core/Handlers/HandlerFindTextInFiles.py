@@ -14,13 +14,19 @@ class HandlerFindTextInFiles(HandlerBase):
         return action_type == "find_text_in_files"
 
     async def handle(self, action: Dict[str, Any]) -> Dict[str, Any]:
-        directory = action.get("directory")
-        find_text = action.get("find_text")  # используем название как в JSON от LLM
-        result: ActionResult = self.file_manager.find_text_in_files(directory, find_text)
+        print(action)
+
+        dir_path = action.get("params").get("directory")
+        find_text = action.get("params").get("text")
+        print(f"\ndir_path = {dir_path}")
+        print(f"\nfind_text = {find_text}")
+
+        result: ActionResult = self.file_manager.findTextInFiles(dir_path, find_text)
+
         return {
             "action": {
                 "type": "find_text_in_files",
-                "directory": directory,
+                "dir_path": dir_path,
                 "find_text": find_text
             },
             "result": result.dict()
