@@ -43,7 +43,8 @@ class JsonResponseExtractorByRegex:
                 if self.debug:
                     self._log(f"Decoded JSON at pos {idx}, length {offset}")
                 return obj
-            except JSONDecodeError:
+            except JSONDecodeError as e:
+                self._log(f"JSONDecodeError at pos {idx}: {e}")
                 idx += 1
 
         raise ValueError("JSON‑блок не найден в ответе LLM")

@@ -74,11 +74,15 @@ class Controller:
             prompt_type=SystemPromptType.MACRO_TASK
         )
 
+        logger.info(f"\n[LLM RAW RESPONSE]:\n{llm_response_text}\n")
+
         try:
             instructions = self.json_extractor_regex.extract(llm_response_text)
             logger.info(f"\n[{self.__class__.__name__}] Ответ очищен от мусора:\n{instructions}\n")
         except Exception as e:
             logger.error(f"[Controller] Ошибка разбора JSON: {e}\n")
+            with open("llm_raw_output_debug.txt", "w", encoding="utf-8") as f:
+                f.write(llm_response_text)
             return {"error": f"Не удалось разобрать ответ LLM: {str(e)}\n"}
 
         # instructions = instructions.get("instructions", [])
@@ -90,7 +94,7 @@ class Controller:
 
         results = []
         for instruction in instructions:
-            action_type = instruction.get("action", "DOES_NOT_EXIST")  # важно: тут должно быть "action", а не "type"
+            action_type = instruction.get("action", "DOES_NOT_EXIST")
 
             if action_type == "DOES_NOT_EXIST":
                 logger.info(f"[Controller] Обнаружено неподдерживаемая инструкция: {instruction.get("actions")}")
@@ -98,7 +102,6 @@ class Controller:
 
             logger.info(f"[Controller] Обрабатываю действие: {action_type}")
 
-            # handler = next((h for h in self.handlers if h.can_handle(action_type)), None)
             handler = self.handlers.get(action_type)
 
             if handler:
