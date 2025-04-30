@@ -3,14 +3,23 @@
 import logging
 from typing import Dict, Any, List
 
-from core.Handlers.HandlerBase import HandlerBase
-from core.Handlers.HandlerFindFileByPrefix import HandlerFindFileByPrefix
-from core.Handlers.HandlerFindTextInFiles import HandlerFindTextInFiles
+from core.handlers.HandlerBase import HandlerBase
+from core.handlers.HandlerFindFileByPrefix import HandlerFindFileByPrefix
+from core.handlers.HandlerFindTextInFiles import HandlerFindTextInFiles
+from core.handlers.HandlerCreateFiles import HandlerCreateFiles
 
 from core.llm_client.LLMClientFactory import LLMClientFactory
 from core.llm_client.SystemPromptType import SystemPromptType
 
 from core.utils.JsonResponseExtractorByRegex import JsonResponseExtractorByRegex
+
+
+import os
+import importlib
+import inspect
+from core.handlers.HandlerBase import HandlerBase
+
+
 
 logger = logging.getLogger("ai_agent.core.controller")
 logger.setLevel(logging.DEBUG)
@@ -22,13 +31,38 @@ class Controller:
         logger.info(f"\nLLM Client initialized: {self.llm_client}\n")
 
         # Регистрируем обработчики
-        self.handlers: Dict[str, HandlerBase] = {
-            "find_file_by_prefix": HandlerFindFileByPrefix(),
-            "find_text_in_files": HandlerFindTextInFiles(),
-        }
+        # self.handlers: Dict[str, HandlerBase] = {
+        #     "find_file_by_prefix": HandlerFindFileByPrefix(),
+        #     "find_text_in_files": HandlerFindTextInFiles(),
+        #     "create_files": HandlerCreateFiles(),
+        # }
+        self.handlers = {}
+        self.scan_handlers()
+        print("\n[Controller] Зарегистрированные хендлеры:")
+        for action_type, handler in self.handlers.items():
+            print(f"  • {action_type:25} → {handler.__class__.__name__}")
 
         # Инициализация экстрактора JSON через regex
         self.json_extractor_regex = JsonResponseExtractorByRegex(debug=True)
+
+
+    def scan_handlers(self):
+        handlers_dir = "core.handlers"
+        handlers_path = os.path.join(os.path.dirname(__file__), "Handlers")
+
+        for file in os.listdir(handlers_path):
+            if not file.endswith(".py") or file == "HandlerBase.py":
+                continue
+
+            module_name = file[:-3]  # remove .py
+            full_module_name = f"{handlers_dir}.{module_name}"
+
+            module = importlib.import_module(full_module_name)
+
+            for name, obj in inspect.getmembers(module, inspect.isclass):
+                if issubclass(obj, HandlerBase) and obj is not HandlerBase:
+                    action_type = obj.get_action_type()
+                    self.handlers[action_type] = obj()
 
 
     async def prepareMacroPromptAndTalkToLLM(self, message: str) -> Dict[str, Any]:

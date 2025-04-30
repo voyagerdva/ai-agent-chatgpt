@@ -76,7 +76,7 @@ class FileManager:
             return ActionResult(success=False, message=msg)
 
 
-    def findFileinFolder(self, directory: str, prefix: str) -> ActionResult:
+    def findFileByName(self, directory: str, prefix: str) -> ActionResult:
         logger.info(f"[FileManager] Поиск файла '{prefix}' в '{directory}'")
         if not os.path.isdir(directory):
             msg = f"Каталог '{directory}' не существует или недоступен."
@@ -94,3 +94,67 @@ class FileManager:
         msg = f"Файл '{prefix}' не найден в '{directory}'."
         logger.info(f"[FileManager] {msg}")
         return ActionResult(success=False, message=msg)
+
+
+    def createFiles(self, files_data: list[dict]) -> ActionResult:
+        """
+        Создание нескольких файлов с заданным контентом.
+
+        :param files_data: список словарей с полями:
+            - path: полный путь до файла (включая имя и расширение)
+            - content: содержимое, которое нужно записать в файл
+        :return: ActionResult с результатом выполнения
+        """
+        logger.info(f"[FileManager] Запуск создания {len(files_data)} файлов")
+
+        created_files = []
+        skipped_files = []
+        errors = []
+
+        for i, file_info in enumerate(files_data):
+            path = file_info.get("path")
+            content = file_info.get("content")
+
+            if not path or not isinstance(content, str):
+                error_msg = f"[FileManager] Неверные данные на итерации {i}: path='{path}', content='{content}'"
+                logger.error(error_msg)
+                errors.append(error_msg)
+                continue
+
+            try:
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+
+                if os.path.exists(path):
+                    logger.warning(f"[FileManager] Файл уже существует, пропущен: {path}")
+                    skipped_files.append(path)
+                    continue
+
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(content)
+
+                logger.info(f"[FileManager] Файл создан: {path}")
+                created_files.append(path)
+
+            except Exception as e:
+                error_msg = f"[FileManager] Ошибка при создании файла '{path}': {e}"
+                logger.error(error_msg)
+                errors.append(error_msg)
+
+        message_parts = []
+        if created_files:
+            message_parts.append(f"Создано файлов: {len(created_files)}.")
+        if skipped_files:
+            message_parts.append(f"Пропущено (уже существуют): {len(skipped_files)}.")
+        if errors:
+            message_parts.append(f"Ошибки: {len(errors)}.")
+
+        return ActionResult(
+            success=len(errors) == 0,
+            message=" ".join(message_parts),
+            data={
+                "created": created_files,
+                "skipped": skipped_files,
+                "errors": errors
+            }
+        )
+        

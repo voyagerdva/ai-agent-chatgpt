@@ -1,8 +1,8 @@
-# core/Handlers/HandlerFindTextInFiles.py
+# core/handlers/HandlerFindTextInFiles.py
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager
-from core.Handlers.HandlerBase import HandlerBase
+from core.handlers.HandlerBase import HandlerBase
 from core.models.ActionResult import ActionResult
 
 
@@ -10,8 +10,9 @@ class HandlerFindTextInFiles(HandlerBase):
     def __init__(self):
         self.file_manager = FileManager()
 
-    def can_handle(self, action_type: str) -> bool:
-        return action_type == "find_text_in_files"
+    @staticmethod
+    def get_action_type() -> str:
+        return "find_text_in_files"
 
     async def handle(self, action: Dict[str, Any]) -> Dict[str, Any]:
         print(action)
@@ -25,7 +26,7 @@ class HandlerFindTextInFiles(HandlerBase):
 
         return {
             "action": {
-                "type": "find_text_in_files",
+                "type": self.get_action_type(),
                 "dir_path": dir_path,
                 "find_text": find_text
             },

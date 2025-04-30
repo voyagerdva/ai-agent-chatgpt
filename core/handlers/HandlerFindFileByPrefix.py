@@ -1,8 +1,8 @@
-# core/Handlers/HandlerFindFileInFolder.py
+# core/handlers/HandlerFindFileInFolder.py
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager
-from core.Handlers.HandlerBase import HandlerBase
+from core.handlers.HandlerBase import HandlerBase
 from core.models.ActionResult import ActionResult
 
 
@@ -10,8 +10,9 @@ class HandlerFindFileByPrefix(HandlerBase):
     def __init__(self):
         self.file_manager = FileManager()
 
-    def can_handle(self, action_type: str) -> bool:
-        return action_type == "find_file_by_prefix"
+    @staticmethod
+    def get_action_type() -> str:
+        return "find_file_by_prefix"
 
     async def handle(self, action: Dict[str, Any]) -> Dict[str, Any]:
         dir_path = action.get("params").get("directory")
@@ -19,7 +20,7 @@ class HandlerFindFileByPrefix(HandlerBase):
         result: ActionResult = self.file_manager.findFileByPrefix(dir_path, prefix)
         return {
             "action": {
-                "type": "find_file_by_prefix",
+                "type": self.get_action_type(),
                 "directory": dir_path,
                 "prefix": prefix
             },
