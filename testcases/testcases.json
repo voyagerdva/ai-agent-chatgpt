@@ -1,0 +1,99 @@
+[
+{
+	"message": "найди в каталоге d:/tmp/kilo3-bla-bla файлы с текстом 'nanotext2', либо файлы, имена которых начинаются на nano и еще создай в этом же каталоге файлы с именем new_microN.txt, где N - меняется от 4 до 11, с текстом внутри - 'etrkklklk' Верни результат по всем запросам."
+},
+
+{
+	"results": [
+		{
+			"action": {
+				"type": "find_text_in_files",
+				"dir_path": "d:/tmp/kilo3-bla-bla",
+				"find_text": "nanotext2"
+			},
+			"result": {
+				"success": true,
+				"message": "Найдено файлов: 3",
+				"data": [
+					"d:/tmp/kilo3-bla-bla\\micro1yy.txt",
+					"d:/tmp/kilo3-bla-bla\\micro3yy.txt",
+					"d:/tmp/kilo3-bla-bla\\nano2yy.txt"
+				]
+			}
+		},
+		{
+			"action": {
+				"type": "find_file_by_prefix",
+				"directory": "d:/tmp/kilo3-bla-bla",
+				"prefix": "nano"
+			},
+			"result": {
+				"success": true,
+				"message": "Найдено файлов: 3",
+				"data": [
+					"d:/tmp/kilo3-bla-bla\\nano1.txt",
+					"d:/tmp/kilo3-bla-bla\\nano2yy.txt",
+					"d:/tmp/kilo3-bla-bla\\nano3.txt"
+				]
+			}
+		},
+		{
+			"action": {
+				"type": "create_files",
+				"files": [
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro4.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro5.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro6.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro7.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro8.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro9.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro10.txt",
+						"content": "etrkklklk"
+					},
+					{
+						"path": "d:/tmp/kilo3-bla-bla/new_micro11.txt",
+						"content": "etrkklklk"
+					}
+				]
+			},
+			"result": {
+				"success": true,
+				"message": "Создано файлов: 8.",
+				"data": {
+					"created": [
+						"d:/tmp/kilo3-bla-bla/new_micro4.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro5.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro6.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro7.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro8.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro9.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro10.txt",
+						"d:/tmp/kilo3-bla-bla/new_micro11.txt"
+					],
+					"skipped": [],
+					"errors": []
+				}
+			}
+		}
+	]
+}
+  ]

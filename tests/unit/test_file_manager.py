@@ -14,7 +14,7 @@ def test_find_file_in_folder(tmp_path):
 
     # 3. Вызываем FileManager
     fm = FileManager()
-    result = fm.findFileinFolder(str(tmp_path), "hello.txt")
+    result = fm.findFileByName(str(tmp_path), "hello.txt")
 
     # 4. Проверяем результат
     assert result.success is True
