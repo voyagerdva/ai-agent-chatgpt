@@ -1,4 +1,4 @@
-# file_manager/FileManager.py
+#=== file_manager/FileManager.py =====================
 
 import os
 import logging

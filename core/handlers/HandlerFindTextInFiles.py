@@ -1,4 +1,4 @@
-# core/handlers/HandlerFindTextInFiles.py
+#=== core/handlers/HandlerFindTextInFiles.py ==========
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager

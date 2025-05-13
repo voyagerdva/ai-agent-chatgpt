@@ -1,4 +1,4 @@
-# core/handlers/HandlerCreateFiles.py
+#=== core/handlers/HandlerCreateFiles.py =============
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager

@@ -1,4 +1,5 @@
-# core/llm_client/LLMClientGemini.py
+#=== core/llm_client/LLMClientGemini.py ================
+
 import google.generativeai as genai
 from core.llm_client.LLMClientBase import LLMClientBase
 from settings.Config import Config

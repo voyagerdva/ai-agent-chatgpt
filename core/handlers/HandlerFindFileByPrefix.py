@@ -1,4 +1,4 @@
-# core/handlers/HandlerFindFileInFolder.py
+#==== core/handlers/HandlerFindFileInFolder.py ========
 
 from typing import Dict, Any
 from file_manager.FileManager import FileManager
