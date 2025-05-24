@@ -15,11 +15,16 @@ class CommandRequest(BaseModel):
 # Инициализируем агента
 controller = Controller()
 
+
 @router.post("/execute")
 async def execute(request: CommandRequest):
     logger.info(f"[Routes] Получен запрос: {request.message}")
     if not request.message:
         raise HTTPException(status_code=400, detail="Поле 'message' обязательно.")
+
     result = await controller.prepareMacroPromptAndTalkToLLM(request.message)
-    logger.info(f"[Routes] Возвращаю результат: {result}")
+
+    logger.info(
+        f"[Routes] Сессия завершена (session_id={result.get('session_id')}, turns={result.get('turns')}, llm_calls={result.get('llm_calls')})"
+    )
     return result

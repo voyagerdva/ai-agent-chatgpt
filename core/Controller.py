@@ -18,7 +18,7 @@ import os
 import importlib
 import inspect
 from core.handlers.HandlerBase import HandlerBase
-
+from core.SessionContext import SessionContext
 
 
 logger = logging.getLogger("ai_agent.core.controller")
@@ -64,13 +64,14 @@ class Controller:
                     action_type = obj.get_action_type()
                     self.handlers[action_type] = obj()
 
-
     async def prepareMacroPromptAndTalkToLLM(self, message: str) -> Dict[str, Any]:
         logger.info(f"[Controller] Получен запрос: {message}")
 
-        # Просто отправляем сообщение вместе с типом системного промпта MACRO_TASK
+        session = SessionContext()
+
         llm_response_text = await self.llm_client.send_message(
-            message,
+            session=session,
+            user_message=message,
             prompt_type=SystemPromptType.MACRO_TASK
         )
 
@@ -83,35 +84,43 @@ class Controller:
             logger.error(f"[Controller] Ошибка разбора JSON: {e}\n")
             with open("llm_raw_output_debug.txt", "w", encoding="utf-8") as f:
                 f.write(llm_response_text)
-            return {"error": f"Не удалось разобрать ответ LLM: {str(e)}\n"}
-
-        # instructions = instructions.get("instructions", [])
-        print(instructions)
+            return {
+                "error": f"Не удалось разобрать ответ LLM: {str(e)}\n",
+                "session_id": session.get_id(),
+                "llm_calls": session.turn_count // 2,
+            }
 
         if not instructions:
             logger.error("\n[Controller] LLM не вернул никаких действий.\n")
-            return {"\nerror": "LLM не вернул никаких действий.\n"}
+            return {
+                "error": "LLM не вернул никаких действий.",
+                "session_id": session.get_id(),
+                "llm_calls": session.turn_count // 2,
+            }
 
         results = []
         for instruction in instructions:
             action_type = instruction.get("action", "DOES_NOT_EXIST")
 
             if action_type == "DOES_NOT_EXIST":
-                logger.info(f"[Controller] Обнаружено неподдерживаемая инструкция: {instruction.get("actions")}")
                 results.append(instruction)
+                continue
 
             logger.info(f"[Controller] Обрабатываю действие: {action_type}")
-
             handler = self.handlers.get(action_type)
 
             if handler:
                 result = await handler.handle(instruction)
                 results.append(result)
             else:
-                logger.warning(f"[Controller] Неподдерживаемый тип действия: {action_type}")
                 results.append({
                     "action": instruction,
                     "result": {"error": f"Неподдерживаемый тип действия: {action_type}"}
                 })
 
-        return {"results": results}
+        return {
+            "session_id": session.get_id(),
+            "turns": session.turn_count,
+            "llm_calls": session.turn_count // 2,
+            "results": results
+        }
